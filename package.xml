@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <name>qr_vision</name>
+  <version>0.0.1</version>
+  <description>The qr_vision package</description>
+  <maintainer email="f.cortevargas@gmail.com">
+    Fernando Corte Vargas
+  </maintainer>
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <run_depend>roscpp</run_depend>
+  <build_depend>rospy</build_depend>
+  <run_depend>rospy</run_depend>
+  <build_depend>std_msgs</build_depend>
+  <run_depend>std_msgs</run_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <build_depend>tf2</build_depend>
+  <run_depend>tf2</run_depend>
+</package>
