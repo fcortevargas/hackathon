@@ -42,7 +42,7 @@ chmod u+x src/qr_vision/src/*.py
 ```bash
 source devel/setup.bash
 ```
-9. Run ROS node as needed. `[ros_node_name]` can be `publisher` (C++), `publisher.py` (Python), or `subscriber` (C++), or `subscriber.py` (Python).
+9. Run ROS node as needed. `[ros_node_name]` can be `publisher` (C++), `publisher.py` (Python), `subscriber` (C++), or `subscriber.py` (Python).
 ```bash
 [roscore] # In a different terminal
 rosrun qr_vision [ros_node_name]
