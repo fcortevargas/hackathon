@@ -3,9 +3,10 @@
 import rospy
 import random
 import time
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseArray
 from tf2.transformations import quaternion_from_euler
 # from [PATH_TO_VISION_CODE] import get_qr_pose
+from aruco import ArucoDetector
 
 def main():
 
@@ -14,7 +15,9 @@ def main():
 	
 	# Create a publisher object.
 	# Here we need to choose the right topic name.
-	pub = rospy.Publisher('qr/pose', Pose, queue_size=1000)  
+	pub = rospy.Publisher('rsahackathon/poses', PoseArray, queue_size=10)
+
+	detector = ArucoDetector('rtsp://192.168.56.179:8086')
 
 	# Seed the random number generator.
 	random.seed(time.time_ns())
@@ -26,6 +29,8 @@ def main():
 		# Create and fill in the message randomly. The z-coordinate of 
 		# the Point element defaults to zero. Only consider rotation 
 		# about z-axis (yaw).
+		positions = detector.updatePositions();
+
 		msg = Pose()
 		msg.position.x = random.random()
 		msg.position.y = 2 * random.random() - 1
