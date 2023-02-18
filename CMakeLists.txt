@@ -6,10 +6,21 @@ project(qr_vision)
 
 # Find the catkin build system, and any other packages on
 # which we depend.
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs geometry_msgs tf2)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs geometry_msgs tf2 message_generation)
 
 # Configure python related settings for this package.
 catkin_python_setup()
+
+add_message_files(
+  FILES
+  Marker.msg
+  MarkerArray.msg
+)
+
+generate_messages(
+   DEPENDENCIES
+   std_msgs
+)
 
 # Declare our catkin package.
 catkin_package()
