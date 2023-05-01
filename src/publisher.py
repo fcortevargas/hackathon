@@ -1,71 +1,55 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import random
 import time
-from geometry_msgs.msg import PoseArray
-from tf2.transformations import quaternion_from_euler
+from qr_vision.msg import MarkerArray, Marker
 # from [PATH_TO_VISION_CODE] import get_qr_pose
 from aruco import ArucoDetector
 
 def main():
 
-	# Initialize the ROS system and become a node.
-	rospy.init_node("publish_qr_pose", anonymous=True)
-	
-	# Create a publisher object.
-	# Here we need to choose the right topic name.
-	pub = rospy.Publisher('rsahackathon/poses', PoseArray, queue_size=10)
+    # Initialize the ROS system and become a node.
+    rospy.init_node("publish_qr_pose", anonymous=True)
 
-	detector = ArucoDetector('rtsp://192.168.56.179:8086')
+    # Create a publisher object.
+    # Here we need to choose the right topic name.
+    pub = rospy.Publisher('rsahackathon/poses', MarkerArray, queue_size=10)
 
-	# Seed the random number generator.
-	random.seed(time.time_ns())
+    detector = ArucoDetector(0)
 
-	# Loop at 2Hz until the node is shut down.
-	rate = rospy.Rate(2)
-	while not rospy.is_shutdown():
+    # Loop at 2Hz until the node is shut down.
+    rate = rospy.Rate(2)
+    while not rospy.is_shutdown():
 
-		# Create and fill in the message randomly. The z-coordinate of 
-		# the Point element defaults to zero. Only consider rotation 
-		# about z-axis (yaw).
-		positions = detector.updatePositions();
+        # Get the positions of the markers (form: { id: (x,y,theta,time) })
+        positions = detector.updatePositions()
+        print("Markers: ", positions)
 
-		msg = Pose()
-		msg.position.x = random.random()
-		msg.position.y = 2 * random.random() - 1
-		q = quaternion_from_euler(0, 0, random.random())
-		msg.orientation.x = q[0]
-		msg.orientation.y = q[1]
-		msg.orientation.z = q[2]
-		msg.orientation.w = q[3]
+        # Create the ROS message from the list of markers
+        msg = MarkerArray()
+        if (positions is None): continue
+        for id,position in positions.items():
+          print(id, position)
+          marker = Marker()
+          marker.name = str(id) # TODO: Add a way to give names to the markers
+          marker.id = id
+          marker.x = position[0]
+          marker.y = position[1]
+          marker.theta = position[2]
+          msg.markers.append(marker)
 
-		# # Here fill in with the code that gets the pose of the QR code 
-		# # with opencv.
-		# msg = Pose()
-		# x, y, theta = get_qr_pose();
-		# msg.position.x = x
-		# msg.position.y = y
-		# q = quaternion_from_euler(0, 0, theta)
-		# msg.orientation.x = q[0]
-		# msg.orientation.y = q[1]
-		# msg.orientation.z = q[2]
-		# msg.orientation.w = q[3]
+        # Publish the message.
+        pub.publish(msg)
 
-		# Publish the message.
-		pub.publish(msg)
+        # Send a message to rosout with the details.
+        rospy.loginfo("Publishing positions")
 
-		# Send a message to rosout with the details.
-		rospy.loginfo(f"Publishing QR positions:"
-			f" position=({msg.position.x}, {msg.position.y}"
-			f" orientation=({msg.orientation.x}, {msg.orientation.y},"
-			f" {msg.orientation.z}, {msg.orientation.w})")
-
-		# Wait until it's time for another iteration.
-		rate.sleep()
+        # Wait until it's time for another iteration.
+        rate.sleep()
 
 if __name__ == '__main__':
-	try:
-		main()
-	except rospy.ROSInterruptException:
-		pass
+    try:
+        main()
+    except rospy.ROSInterruptException:
+        pass
