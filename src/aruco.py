@@ -79,7 +79,7 @@ class ArucoDetector:
                     center = (sum(x) / 4, sum(y) / 4)
 
                     # Calculate angle of marker
-                    angle = np.arctan2(x[3] - x[0], y[3] - y[0]);
+                    angle = np.arctan2(x[0] - x[3], y[0] - y[3])
                     # angle = np.arctan2((y[0] + y[1] / 2) - center[1], (x[0] + x[1] / 2) - center[0])
 
                     # TODO
