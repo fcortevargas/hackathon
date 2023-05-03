@@ -3,22 +3,6 @@ import cv2.aruco as aruco
 import numpy as np
 import os
 import time
-import json
-import http.server
-import socketserver
-import threading
-
-objectMarkers = {
-    1: "robot1",
-    2: "robot2",
-    3: "element1",
-    4: "element2",
-    5: "element3"
-}
-terrainWidth = 20
-terrainHeight = 20
-
-positions = {};
 
 
 class MarkerDetector:

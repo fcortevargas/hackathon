@@ -6,8 +6,10 @@ import time
 from qr_vision.msg import MarkerArray, Marker
 # from [PATH_TO_VISION_CODE] import get_qr_pose
 from aruco import ArucoDetector
+import sys
+import argparse
 
-def main():
+def main(camera=4, frequency=2):
 
     # Initialize the ROS system and become a node.
     rospy.init_node("publish_qr_pose", anonymous=True)
@@ -16,14 +18,14 @@ def main():
     # Here we need to choose the right topic name.
     pub = rospy.Publisher('rsahackathon/poses', MarkerArray, queue_size=10)
 
-    detector = ArucoDetector(4)
+    detector = ArucoDetector(camera)
 
     rospy.loginfo("Starting calibration...")
     detector.calibrate()
     rospy.loginfo("Calibrated")
 
     # Loop at 2Hz until the node is shut down.
-    rate = rospy.Rate(2)
+    rate = rospy.Rate(frequency)
     while not rospy.is_shutdown():
 
         # Get the positions of the markers (form: { id: (x,y,theta,time) })
@@ -54,7 +56,11 @@ def main():
         rate.sleep()
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(prog='Hackathon ROS Publisher')
+    parser.add_argument('-c', '--camera')
+    parser.add_argument('-f', '--frequency')
+    args = parser.parse_args()
     try:
-        main()
+        main(int(args.camera), int(args.frequency))
     except rospy.ROSInterruptException:
         pass
