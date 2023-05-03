@@ -3,8 +3,25 @@ import cv2.aruco as aruco
 import numpy as np
 import os
 import time
+import json
+import http.server
+import socketserver
+import threading
 
-class ArucoDetector:
+objectMarkers = {
+    1: "robot1",
+    2: "robot2",
+    3: "element1",
+    4: "element2",
+    5: "element3"
+}
+terrainWidth = 20
+terrainHeight = 20
+
+positions = {};
+
+
+class MarkerDetector:
 
     def __init__(self, camera):
         super()
@@ -76,10 +93,10 @@ class ArucoDetector:
                     # Calculate center of marker
                     x = [int(box[0][0][0]), int(box[0][1][0]), int(box[0][2][0]), int(box[0][3][0])]
                     y = [int(box[0][0][1]), int(box[0][1][1]), int(box[0][2][1]), int(box[0][3][1])]
-                    center = (sum(x) / 4, sum(y) / 4)
+                    center = (sum(x)/4, sum(y)/4)
 
                     # Calculate angle of marker
-                    angle = np.arctan2((y[0] + y[1] / 2) - center[1], (x[0] + x[1] / 2) - center[0])
+                    angle = np.arctan2((y[0]+y[1]/2)-center[1], (x[0]+x[1]/2)-center[0])
 
                     # TODO
 
@@ -87,7 +104,7 @@ class ArucoDetector:
                     marker = (
                         center[0],
                         center[1],
-                        angle,  # TODO: Calculate orientation properly
+                        angle, # TODO: Calculate orientation properly
                         time.time()
                     )
                     self.positions[id[0]] = marker
@@ -95,11 +112,17 @@ class ArucoDetector:
         return self.positions
 
     def getPositions(self):
-        return self.positions
+        return positions
 
     def __del__(self):
         self.cap.release()
         cv2.destroyAllWindows()
 
-# d = ArucoDetector("rtsp://192.168.19.99:8086")
-# d.updatePositions()
+
+arucoDetector = MarkerDetector(4)
+
+arucoDetector.calibrate()
+while cv2.waitKey(1) != ord('q'):
+    arucoDetector.updatePositions()
+
+

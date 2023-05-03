@@ -18,6 +18,10 @@ def main():
 
     detector = ArucoDetector(4)
 
+    rospy.loginfo("Starting calibration...")
+    detector.calibrate()
+    rospy.loginfo("Calibrated")
+
     # Loop at 2Hz until the node is shut down.
     rate = rospy.Rate(2)
     while not rospy.is_shutdown():
@@ -38,7 +42,7 @@ def main():
           marker.theta = round(position[2],3)
           marker.age = round(time.time() - position[3],3)
           msg.markers.append(marker)
-          print("%s : (x=%s, y=%s, θ=%s) - %s" %(marker.id, marker.x, marker.y, marker.theta, marker.time))
+          print("%s : (x=%s, y=%s, θ=%s) - %s" %(marker.id, marker.x, marker.y, marker.theta, marker.age))
 
         # Publish the message.
         pub.publish(msg)
