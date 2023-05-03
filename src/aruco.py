@@ -21,7 +21,6 @@ class ArucoDetector:
         self.arucoDict = aruco.getPredefinedDictionary(self.key)
         self.arucoParam = aruco.DetectorParameters_create()
         self.positions = {}
-        self.startTime = time.time()
         time.sleep(3)
 
     def updatePositions(self, show=True):
@@ -40,6 +39,7 @@ class ArucoDetector:
         # Update list of positions
         if (ids is not None):
             for id, box in zip(ids, boxes):
+                # print(id, box)
                 # Calculate center of marker
                 x = [int(box[0][0][0]), int(box[0][1][0]), int(box[0][2][0]), int(box[0][3][0])]
                 y = [int(box[0][0][1]), int(box[0][1][1]), int(box[0][2][1]), int(box[0][3][1])]
@@ -54,7 +54,7 @@ class ArucoDetector:
                     center[0],
                     center[1],
                     angle, # TODO: Calculate orientation
-                    round(time.time() - self.startTime,3)
+                    time.time()
                 )
                 positions[id[0]] = marker
 

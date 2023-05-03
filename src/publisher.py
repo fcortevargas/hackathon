@@ -16,7 +16,7 @@ def main():
     # Here we need to choose the right topic name.
     pub = rospy.Publisher('rsahackathon/poses', MarkerArray, queue_size=10)
 
-    detector = ArucoDetector(0)
+    detector = ArucoDetector(4)
 
     # Loop at 2Hz until the node is shut down.
     rate = rospy.Rate(2)
@@ -24,20 +24,21 @@ def main():
 
         # Get the positions of the markers (form: { id: (x,y,theta,time) })
         positions = detector.updatePositions()
-        print("Markers: ", positions)
+        # print("Markers: ", positions)
 
         # Create the ROS message from the list of markers
         msg = MarkerArray()
         if (positions is None): continue
         for id,position in positions.items():
-          print(id, position)
           marker = Marker()
           marker.name = str(id) # TODO: Add a way to give names to the markers
           marker.id = id
-          marker.x = position[0]
-          marker.y = position[1]
-          marker.theta = position[2]
+          marker.x = round(position[0],3)
+          marker.y = round(position[1],3)
+          marker.theta = round(position[2],3)
+          marker.age = round(time.time() - position[3],3)
           msg.markers.append(marker)
+          print("%s : (x=%s, y=%s, θ=%s) - %s" %(marker.id, marker.x, marker.y, marker.theta, marker.time))
 
         # Publish the message.
         pub.publish(msg)
