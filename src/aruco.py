@@ -4,6 +4,9 @@ import numpy as np
 import os
 import time
 
+terrainX = 2000
+terrainY = 1500
+
 class ArucoDetector:
 
     def __init__(self, camera):
@@ -22,7 +25,7 @@ class ArucoDetector:
         self.isCalibrated = False
         self.warpMat = None
 
-        self.projectedCorners = [[0, 0], [0, 1000], [1000, 0], [1000, 1000]]
+        self.projectedCorners = [[0, 0], [0, terrainY], [terrainX, 0], [terrainX, terrainY]]
 
         # Needed to allow OpenCV to wake up
         time.sleep(3)
@@ -56,7 +59,7 @@ class ArucoDetector:
         success, img = self.cap.read()
 
         # Warp image to project to terrain
-        warped = cv2.warpPerspective(img, self.warpMat, (1000, 1000))
+        warped = cv2.warpPerspective(img, self.warpMat, (terrainX, terrainY))
         gray = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
 
         # Detect aruco markers in image
