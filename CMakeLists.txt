@@ -28,12 +28,14 @@ catkin_package()
 # Specify locations of header files.
 include_directories(include ${catkin_INCLUDE_DIRS})
 
+
+# CPP stuff commented out otherwise build fails
 # Declare the executable, along with its source files. If
 # there are multiple executables, use multiple copies of
 # this line.
-add_executable(publisher src/publisher.cpp)
+# add_executable(publisher src/publisher.cpp)
 
 # Specify libraries against which to link. Again, this
 # line should be copied for each distinct executable in
 # the package
-target_link_libraries(publisher ${catkin_LIBRARIES})
+# target_link_libraries(publisher ${catkin_LIBRARIES})
